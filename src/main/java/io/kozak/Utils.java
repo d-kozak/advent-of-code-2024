@@ -14,4 +14,10 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    public static void swap(char[] arr, int left, int right) {
+        var tmp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = tmp;
+    }
 }
