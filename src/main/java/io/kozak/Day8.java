@@ -77,7 +77,7 @@ public class Day8 {
         System.out.println(res2);
     }
 
-    private static char[][] readGrid(BufferedReader reader) throws IOException {
+    public static char[][] readGrid(BufferedReader reader) throws IOException {
         var lines = new ArrayList<char[]>();
         String line;
         while ((line = reader.readLine()) != null) {
