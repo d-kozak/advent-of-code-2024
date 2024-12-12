@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public class Utils {
+
+
     public static Stream<String> loadInput(String name) {
         try {
             return Files.lines(Path.of(Utils.class.getResource("/" + name).toURI()));
