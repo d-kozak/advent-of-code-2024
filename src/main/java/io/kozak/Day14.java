@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Day14 {
     static class Coord {
@@ -23,6 +24,18 @@ public class Day14 {
                    "x=" + x +
                    ", y=" + y +
                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Coord coord)) return false;
+            return x == coord.x && y == coord.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
         }
     }
 
