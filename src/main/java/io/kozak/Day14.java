@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class Day14 {
-    static class Coord {
-        int x;
-        int y;
+    public static class Coord {
+        public int x;
+        public int y;
 
-        Coord(int x, int y) {
+        public Coord(int x, int y) {
             this.x = x;
             this.y = y;
         }
