@@ -4,17 +4,18 @@ void main() throws IOException {
 }
 
 private void run(String fileName) throws IOException {
-    var graph = new HashMap<String, List<String>>();
+    var graph = new HashMap<String, Set<String>>();
     for (var edge : Files.lines(Path.of("src/main/resources", fileName)).map(it -> it.split("-")).toList()) {
         var from = edge[0];
         var to = edge[1];
-        graph.computeIfAbsent(from, (_) -> new ArrayList<>()).add(to);
-        graph.computeIfAbsent(to, (_) -> new ArrayList<>()).add(from);
+        graph.computeIfAbsent(from, (_) -> new HashSet<>()).add(to);
+        graph.computeIfAbsent(to, (_) -> new HashSet<>()).add(from);
     }
+    println(graph.size());
 
     var valid = new HashSet<String>();
-    Set<String> biggest = Set.of();
-    var seen = new HashSet<String>();
+//    Set<String> biggest = Set.of();
+//    var seen = new HashSet<String>();
 
     for (var node : graph.keySet()) {
         var triples = findTriples(node, graph);
@@ -23,18 +24,51 @@ private void run(String fileName) throws IOException {
                 .peek(Collections::sort)
                 .map(it -> String.join(",", it))
                 .forEach(valid::add);
-        if (!seen.contains(node)) {
-            var reach = findReachable(node, graph);
-            seen.addAll(reach);
-            if (biggest.size() < reach.size())
-                biggest = reach;
-        }
+//        if (!seen.contains(node)) {
+//            var reach = findReachable(node, graph);
+//            seen.addAll(reach);
+//            if (biggest.size() < reach.size())
+//                biggest = reach;
+//        }
 
     }
-    System.out.println(valid.size());
-    System.out.println(String.join(",", biggest.stream().sorted().toList()));
-    System.out.println("===");
+    println(valid.size());
+//    println(String.join(",", biggest.stream().sorted().toList()));
+    var res = findLargestClique(graph);
+    System.out.println(res.stream().sorted().collect(Collectors.joining(",")));
+    println("===");
 }
+
+Set<String> largestClique = Set.of();
+
+private Set<String> findLargestClique(Map<String, Set<String>> graph) {
+    dfs(new HashSet<>(), graph.keySet().stream().toList(), graph);
+    return largestClique;
+}
+
+private void dfs(Set<String> curr, List<String> remaining, Map<String, Set<String>> graph) {
+    if (curr.size() > largestClique.size())
+        largestClique = new HashSet<>(curr);
+    for (int i = 0; i < remaining.size(); i++) {
+        var str = remaining.get(i);
+        curr.add(str);
+        if (isClique(curr, graph)) {
+            dfs(curr, remaining.subList(i + 1, remaining.size()), graph);
+        }
+        curr.remove(str);
+    }
+}
+
+private boolean isClique(Set<String> candidate, Map<String, Set<String>> graph) {
+    for (var x : candidate) {
+        for (var y : candidate) {
+            if (x.equals(y) || graph.get(x).contains(y)) continue;
+            return false;
+        }
+    }
+    return true;
+}
+
 
 private Set<String> findReachable(String node, HashMap<String, List<String>> graph) {
     var seen = new HashSet<String>();
@@ -51,7 +85,7 @@ private Set<String> findReachable(String node, HashMap<String, List<String>> gra
     return seen;
 }
 
-private List<List<String>> findTriples(String node, Map<String, List<String>> graph) {
+private List<List<String>> findTriples(String node, Map<String, Set<String>> graph) {
     record State(String node, int len, State prev) {
     }
     var res = new ArrayList<List<String>>();
